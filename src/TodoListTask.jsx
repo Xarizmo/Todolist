@@ -1,17 +1,25 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-
-class TodoListTask extends React.Component {
-    render = () => {
-        return (
-            <div className="todoList-tasks">
-                <div className="todoList-task">
-                    <input type="checkbox" checked={this.props.isDone}/>
-                    <span>{this.props.title}, {this.props.priority}</span>
-                </div>
-            </div>
-        );
-    }
+export default function TodoListTask(props) {
+  
+  let onIsDoneChanged = (e) => {
+    props.changeStatus(props.task, e.currentTarget.checked)
+  };
+  
+  return (
+      <div className="todoList-task">
+        <input
+          type="checkbox"
+          checked={props.task.isDone}
+          onChange={onIsDoneChanged}
+        />
+        <span>{props.task.title}, {props.task.priority}</span>
+      </div>
+  );
 }
 
-export default TodoListTask;
+TodoListTask.propTypes = {
+  task: PropTypes.object,
+  changeStatus: PropTypes.func
+};
