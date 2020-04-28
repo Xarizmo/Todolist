@@ -7,8 +7,10 @@ export default function TodoListTask(props) {
     props.changeStatus(props.task, e.currentTarget.checked)
   };
   
+  let taskIsDoneClass = props.task.isDone ? "todoList-task done" : "todoList-task";
+  
   return (
-      <div className="todoList-task">
+      <div className={taskIsDoneClass}>
         <input
           type="checkbox"
           checked={props.task.isDone}

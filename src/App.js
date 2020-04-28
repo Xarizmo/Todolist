@@ -52,18 +52,20 @@ class App extends React.Component {
   render = () => {
     
     let filteredTasks = this.state.tasks.filter(t => {
-      if (this.state.filterValue === 'All') {
-        return true;
-      }
-      if (this.state.filterValue === 'Completed') {
-        return t.isDone === true;
-      }
-      if (this.state.filterValue === 'Active') {
-        return t.isDone === false;
+      switch (this.state.filterValue) {
+        case "Active":
+          return !t.isDone;
+        case "Completed":
+          return t.isDone;
+        case "All":
+          return true;
+        default:
+          return true;
       }
     });
     
     return (
+      
       <div className="App">
         <div className="todoList">
           <TodoListHeader addTask={this.addTask}/>
@@ -76,7 +78,8 @@ class App extends React.Component {
           />
         </div>
       </div>
-    );
+    )
+      ;
   };
 }
 
