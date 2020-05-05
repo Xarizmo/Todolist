@@ -7,8 +7,9 @@ export default function TodoListTasks(props) {
       return (
         <TodoListTask
           key={task.id}
-          changeStatus={props.changeStatus}
           task={task}
+          changeStatus={props.changeStatus}
+          changeTaskTitle={props.changeTaskTitle}
         />
       )
     });
