@@ -1,42 +1,38 @@
 import React from 'react';
 import './App.css';
-import TodoListHeader from './TodoListHeader';
-import TodoListTasks from './TodoListTasks';
-import TodoListFooter from './TodoListFooter';
+
+import TodoList from './TodoList'
+import AddNewItemForm from "./AddNewItemForm";
 
 class App extends React.Component {
-  
   state = {
-    tasks: [
-      // {id: "1", title: "JS", isDone: false, priority: "priority: medium"},
-      // {id: "2", title: "CSS", isDone: true, priority: "priority: low"},
-      // {id: "3", title: "React", isDone: false, priority: "priority: high"},
-      // {id: "4", title: "SaSS", isDone: true, priority: "priority: medium"},
-      // {id: "5", title: "Redux", isDone: false, priority: "priority: high"}
-    ],
-    filterValue: "All"
-  };
+    todoLists: [
+      // {id: 1, title: "JS"},
+      // {id: 2, title: "GraphQL"},
+      // {id: 3, title: "Redux"},
+      // {id: 4, title: "TypeScript"}
+    ]
+  }
   
-  nextTaskId = 1;
+  nextTodoListId = 0;
   
   saveState = () => {
     let stateAsString = JSON.stringify(this.state);
-    localStorage.setItem("state", stateAsString);
+    localStorage.setItem("our-todoLists-state", stateAsString);
   }
   
   restoreState = () => {
     let state = {
-      tasks: [],
-      filterValue: "All"
+      todoLists: []
     };
-    let stateAsString = localStorage.getItem("state");
+    let stateAsString = localStorage.getItem("our-todoLists-state");
     if (stateAsString) {
       state = JSON.parse(stateAsString);
     }
     this.setState(state, () => {
-      this.state.tasks.forEach(t => {
-        if (t.id >= this.nextTaskId) {
-          this.nextTaskId = t.id + 1
+      this.state.todoLists.forEach(t => {
+        if (t.id >= this.nextTodoListId) {
+          this.nextTodoListId = t.id + 1
         }
       })
     });
@@ -46,76 +42,30 @@ class App extends React.Component {
     this.restoreState();
   }
   
-  addTask = (newTitle) => {
-    let newTask = {
-      id: this.nextTaskId,
-      title: newTitle,
-      isDone: false,
-      priority: "priority: low"
+  addTodoList = (newTitle) => {
+    let newTodoList = {
+      id: this.nextTodoListId,
+      title: newTitle
     };
-    this.nextTaskId++;
-    let newTasks = [...this.state.tasks, newTask];
-    this.setState({tasks: newTasks}, this.saveState)
+    this.nextTodoListId++;
+    let newTodoLists = [...this.state.todoLists, newTodoList];
+    this.setState({ todoLists: newTodoLists }, this.saveState)
   };
   
-  changeFilter = (newFilterValue) => {
-    this.setState({
-      filterValue: newFilterValue
-    })
-  };
-  
-  changeTask = (taskId, obj) => {
-    let newTasks = this.state.tasks.map(t => {
-      if (t.id === taskId) {
-        return {...t, ...obj}
-      }
-      return t;
-    })
-    this.setState({tasks: newTasks}, this.saveState)
-  }
-  changeStatus = (taskId, isDone) => {
-    this.changeTask(taskId, {isDone: isDone})
-  };
-  
-  changeTaskTitle = (taskId, title) => {
-    this.changeTask(taskId, {title: title})
-  };
-  
-  
-  render = () => {
-    
-    let filteredTasks = this.state.tasks.filter(t => {
-      switch (this.state.filterValue) {
-        case "Active":
-          return !t.isDone;
-        case "Completed":
-          return t.isDone;
-        case "All":
-          return true;
-        default:
-          return true;
-      }
-    });
+  render() {
+    const todoLists = this.state.todoLists.map(tl => <TodoList key={tl.id} id={tl.id} title={tl.title} />)
     
     return (
-      
-      <div className="App">
-        <div className="todoList">
-          <TodoListHeader addTask={this.addTask}/>
-          <TodoListTasks
-            tasks={filteredTasks}
-            changeStatus={this.changeStatus}
-            changeTaskTitle={this.changeTaskTitle}
-          />
-          <TodoListFooter
-            filterValue={this.state.filterValue}
-            changeFilter={this.changeFilter}
-          />
+      <>
+        <div>
+          <AddNewItemForm addItem={this.addTodoList} />
         </div>
-      </div>
+        <div className="App">
+          {todoLists}
+        </div>
+      </>
     )
-      ;
-  };
+  }
 }
 
 export default App;
